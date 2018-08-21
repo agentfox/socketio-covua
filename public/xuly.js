@@ -36,7 +36,6 @@ BlackPawn2:{type:"Pawn",color:"black",src:"chess_pieces/bp.svg",originX:2,origin
 BlackPawn4:{type:"Pawn",color:"black",src:"chess_pieces/bp.svg",originX:4,originY:1,x:4,y:1},BlackPawn5:{type:"Pawn",color:"black",src:"chess_pieces/bp.svg",originX:5,originY:1,x:5,y:1},
 BlackPawn6:{type:"Pawn",color:"black",src:"chess_pieces/bp.svg",originX:6,originY:1,x:6,y:1},BlackPawn7:{type:"Pawn",color:"black",src:"chess_pieces/bp.svg",originX:7,originY:1,x:7,y:1}};
 
-var renbanco=false;
 
 $(document).ready(function() {
     $(".loginForm").show();
@@ -49,6 +48,8 @@ $(document).ready(function() {
         $(".chatForm").show(1000);
         $("#currentUser").html(data);
         socket.Username = data;
+        console.log(socket.Username);
+        
         $("#challengeButton").click(function() {
             var target = prompt("Your opponent's name", "Harry Potter");
     
@@ -121,7 +122,7 @@ socket.on("wanna-fight", function(data) {
     if(window.confirm(`${data.challenger} challenge you to a game !`))
     {
         socket.emit('accepted',data.challenger)
-        renbanco=true;
+        renbanco();
     }
     else{
         socket.emit('declined',data.challenger)
@@ -135,14 +136,14 @@ socket.on('challenge-status',(data)=>{
     if(data.status==='accepted') {
         alert('Your opponent accepted the challenge')
         socket.emit('join-room',data.target)
-        renbanco=true;
+        renbanco();
     }
     else {
         alert('Your opponent declined the challenge')
     }
 })
 
-if (renbanco) {
+let renbanco = () => {
     // -------------------- Create the chess board --------------------
     var width = window.innerWidth;
     var height = window.innerHeight;
@@ -204,14 +205,11 @@ if (renbanco) {
                     id : i
                 });
 
-                    
-                
 
                 piece.on('dragstart', function() {
                     console.log('vao dragstart chua');
                     
-                    socket.emit('picked', {name : i,color : Pieces[i].color} )
-                    socket.on('pickedResult', (resData) => {
+                    socket.emit('picked', {name : i,color : Pieces[i].color} ,(resData) => {
                        
                             if(resData) {
                                 console.log(resData);
@@ -241,59 +239,19 @@ if (renbanco) {
 
                 });
                 
-                piece.on('dragend', function() {
+                piece.on('dragend', function() {  // mover
                     
-                    piece.setPosition({
-                        x : Math.floor(0.5+(piece.attrs.x-0)/80)*80,
-                        y : Math.floor(0.5+piece.attrs.y/80)*80 
-                    });
+                    
+                    let  nxtx = Math.floor(0.5+(piece.attrs.x-0)/80)*80
+                    let  nxty = Math.floor(0.5+piece.attrs.y/80)*80 
+                    
                     let cir = stage.find('Circle'); // remove possible moves hint
                     cir.hide();
                     layer.draw();
                     // send the data of the move  and wait for validation ------------------------
-                    socket.emit('moved',{ sender : socket.Username, name : i,color: Pieces[i].color, type: Pieces[i].type,x: Pieces[i].x , y: Pieces[i].y, nextX : piece.attrs.x/80 , nextY : piece.attrs.y/80 })
-                    socket.on('movedResult',(resData) => {
+                    socket.emit('moved',{ sender : socket.Username, name : i,color: Pieces[i].color, type: Pieces[i].type,x: Pieces[i].x , y: Pieces[i].y, nextX : nxtx , nextY : nxty },(resData) => {
 
-                            if(resData==="Valid") {
-                                    
-                                // Event was emitted successfully
-                                    console.log( piece.attrs.x,piece.attrs.y);
-
-                                    let oldX =  Pieces[i].x;
-                                    let oldY =  Pieces[i].y;
-                                    let newX =  piece.attrs.x/80;
-                                    let newY =  piece.attrs.y/80;
-
-                                    console.log('truoc khi set',boardCells[`C${newX}${newY}`].data.name);
-                                    console.log('p truoc khi set',Pieces[`${ boardCells[`C${newX}${newY}`].data.name }`]);
-                                    
-                                    if( boardCells[`C${newX}${newY}`].data.name &&Pieces[`${boardCells[`C${newX}${newY}`].data.name}`] && Pieces[`${boardCells[`C${newX}${newY}`].data.name}`].color !== Pieces[i].color  ) {
-                                        console.log('vao roi');
-                                        
-                                        var shape = stage.find(`#${ boardCells[`C${newX}${newY}`].data.name }`)[0];
-                                        shape.hide();
-                                        layer.draw();
-                                        delete Pieces[`  ${ boardCells[`C${newX}${newY}`].data.name }  `]
-                                        
-                                    }
-                                    boardCells[`C${oldX}${oldY}`].data=0;
-
-                                    Pieces[i].x = newX;
-                                    Pieces[i].y = newY; // add new pos to the originPieces
-                                    
-                                    boardCells[`C${newX}${newY}`].data = { color:Pieces[i].color,name: i }
-                                    console.log('sau khi set',boardCells[`C${newX}${newY}`].data);
-                                    console.log('p sau khi set',Pieces[`${ boardCells[`C${newX}${newY}`].data.name }`]);
-                                    
-                            
-                                    
-                                    // add the shape to the layer
-                                    layer.add(piece);
-                                    // add the layer to the stage
-                                    stage.add(layer);
-                                    return;
-                            }
-                            else if (resData==="Invalid")
+                             if (resData==="Invalid")
                                 {console.log('khong dc di nhu the');
                                     piece.setPosition({
                                             x : Pieces[i].x*80,
@@ -311,6 +269,48 @@ if (renbanco) {
                     // ----------------------------------------------------------
 
                 });
+
+
+                socket.on('everyBodyMove',(data)=> {
+                                                        
+                                // Event was emitted successfully
+                                console.log( piece.attrs.x,piece.attrs.y);
+
+                                let oldX =  Pieces[i].x;
+                                let oldY =  Pieces[i].y;
+                                let newX =  piece.attrs.x/80;
+                                let newY =  piece.attrs.y/80;
+ 
+                                if( boardCells[`C${newX}${newY}`].data.name &&Pieces[`${boardCells[`C${newX}${newY}`].data.name}`] && Pieces[`${boardCells[`C${newX}${newY}`].data.name}`].color !== Pieces[i].color  ) {
+                                    console.log('vao roi');
+                                    
+                                    var shape = stage.find(`#${ boardCells[`C${newX}${newY}`].data.name }`)[0];
+                                    shape.hide();
+                                    layer.draw();
+                                    delete Pieces[`  ${ boardCells[`C${newX}${newY}`].data.name }  `]
+                                    
+                                }
+                                boardCells[`C${oldX}${oldY}`].data=0;
+
+                                Pieces[i].x = newX;
+                                Pieces[i].y = newY; // add new pos to the originPieces
+                                
+                                boardCells[`C${newX}${newY}`].data = { color:Pieces[i].color,name: i }
+                                console.log('sau khi set',boardCells[`C${newX}${newY}`].data);
+                                console.log('p sau khi set',Pieces[`${ boardCells[`C${newX}${newY}`].data.name }`]);
+                                
+                        
+                                
+                                // add the shape to the layer
+                                layer.add(piece);
+                                // add the layer to the stage
+                                stage.add(layer);
+                                return;
+                })
+
+
+
+
                 // add the shape to the layer
                 layer.add(piece);
                 // add the layer to the stage
