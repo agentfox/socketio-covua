@@ -281,7 +281,7 @@ let renbanco = () => {
                         let oldY =  data.y;
                         let newX =  data.nextX;
                         let newY =  data.nextY;
-                        let imageOfPiece = $(`#${data.name}`);
+                        let imageOfPiece = stage.find(`#${data.name}`)[0];
                         let theMovedPiece = Pieces[`${data.name}`];
                         if( boardCells[`C${newX}${newY}`].data.name &&Pieces[`${boardCells[`C${newX}${newY}`].data.name}`] && Pieces[`${boardCells[`C${newX}${newY}`].data.name}`].color !== theMovedPiece.color  ) {
                             console.log('vao roi');
@@ -295,7 +295,7 @@ let renbanco = () => {
 
                         theMovedPiece.x = newX;
                         theMovedPiece.y = newY; // add new pos to the originPieces
-                        imageOfPiece.setPosition({
+                        imageOfPiece.position({
                             x : theMovedPiece.x*80,
                             y : theMovedPiece.y*80 
                             });
@@ -303,7 +303,7 @@ let renbanco = () => {
                         boardCells[`C${newX}${newY}`].data = { color:theMovedPiece.color,name: i }
 
                         // add the shape to the layer
-                        layer.add(piece);
+                        layer.add(imageOfPiece);
                         // add the layer to the stage
                         stage.add(layer);
                         
