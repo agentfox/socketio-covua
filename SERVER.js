@@ -6,7 +6,7 @@ app.set("views","./views")
 var server = require("http").Server(app);
 var io = require("socket.io")(server);
 server.listen(3000);
-
+const util = require('util')
 var RoomsList = {};
 var mangUser = {};
 
@@ -49,7 +49,6 @@ io.on("connection", function(socket) {
     });
 
     socket.on('challenging',(data)=>{   // challenger ask for a match
-        console.log(` da len server ${data}`);
         
         io.to(`${mangUser[`${data.target}`]}`).emit('wanna-fight', {challenger : data.challenger });
         
@@ -59,11 +58,7 @@ io.on("connection", function(socket) {
         socket.myGame = `${socket.Username}-${cha}`;
         socket.challenger = `${cha}`;
         socket.join(`${socket.Username}-${cha}`); // target join room
-        socket.leave(`${mangUser[`${socket.Username}`]}`); // roi phong cua no
-
-
-
-
+        //socket.leave(`${mangUser[`${socket.Username}`]}`); // roi phong cua no
 
 
         RoomsList[`${socket.Username}-${cha}`] = {
@@ -130,7 +125,7 @@ io.on("connection", function(socket) {
 
 
         let theGame = RoomsList[`${socket.Username}-${cha}`]; // challenger challengerID target targetID 
-        //--------------------------------------------originBoardCells  o-riginPieces boardCells moveCounter
+    //--------------------------------------------originBoardCells  o-riginPieces boardCells moveCounter 
 
         let makeNewGame = () => {
             for(let p in theGame.originPieces) {
@@ -407,18 +402,22 @@ io.on("connection", function(socket) {
             return moves;
         }
         let legalCheck = (data) => {
-            let moves
-            if ( theGame.moveCounter%2 ===0 && data.color==='white' )
+            let moves;
+            console.log(`410 ${util.inspect(data, false, null)}`);
+            
+            if ((theGame.moveCounter===0 || theGame.moveCounter%2 ===0) && data.color==='white' )
                 {moves = possibleMoves(data);}
             else if ( theGame.moveCounter%2 ===1 && data.color==='black' )
                 {moves = possibleMoves(data);}
             else { moves = [] };
+            console.log(`417 ${moves}`);
+            
             for(let m = 0; m<moves.length ; m++) {
                 if(data.nextX===moves[m][0] && data.nextY===moves[m][1] ) {
                     let c = theGame.boardCells[`C${data.nextX}${data.nextY}`].data;
                     if(c.color && c.color !== data.color) {
                         if (theGame.originPieces[`${c.name}`].type==='King') {
-                            // game over
+                            io.in(socket.myGame).emit('GameOver', c.color);
                         }
                         delete theGame.originPieces[`${c.name}`];
                     }
@@ -435,28 +434,33 @@ io.on("connection", function(socket) {
             
         }
         //000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-        socket.on('picked',(data)=>{
+        socket.on('picked',(data,fn)=>{
 
             if(data) {
                 let a = possibleMoves(data);
-                socket.emit('pickedResult',a)
+                fn(a)
                 }
         })
         socket.on('moved', function (data,fn) {
+            
             if(data ) { 
-                if(socket.Username===socket.challenger && data.color === 'white' ){
+                
+                if(data.sender===socket.challenger && data.color === 'white' ){
+                    
+                    
                     if (legalCheck(data)) {
                     fn("Valid");
                     io.in(socket.myGame).emit('everyBodyMove', data);
                     }else
-                    fn("Invalid");
+                    {fn("Invalid");}
                 }
-                else if(socket.Username!==socket.challenger && data.color === 'black' ){
+                else if(data.sender!==socket.challenger && data.color === 'black' ){
+                    
                     if (legalCheck(data)) {
-                    fn("Valid");
-                    io.in(socket.myGame).emit('everyBodyMove', data);
+                        fn("Valid");
+                        io.in(socket.myGame).emit('everyBodyMove', data);
                     }else
-                    fn("Invalid");
+                    {fn("Invalid");}
                 }
                 else {
                     fn("Invalid");
@@ -509,31 +513,11 @@ io.on("connection", function(socket) {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     socket.on('join-room',(target)=> {  // challenger join room
         socket.myGame = `${target}-${socket.Username}`;
         socket.challenger = `${socket.Username}`;
         socket.join(`${target}-${socket.Username}`);
-        socket.leave(`${mangUser[`${socket.Username}`]}`);
+        //socket.leave(`${mangUser[`${socket.Username}`]}`);
 
         // OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
         
@@ -816,15 +800,20 @@ io.on("connection", function(socket) {
             return moves;
         }
         var legalCheck = (data) => {
-            let moves
-            if ( theGame.moveCounter%2 ===0 && data.color==='white' )
+            let moves;
+
+            if ((theGame.moveCounter===0 || theGame.moveCounter%2 ===0) && data.color==='white' )
                 {moves = possibleMoves(data);}
             else if ( theGame.moveCounter%2 ===1 && data.color==='black' )
                 {moves = possibleMoves(data);}
             else { moves = [] };
+            console.log(`813 ${moves}`);
+            
             for(let m = 0; m<moves.length ; m++) {
                 if(data.nextX===moves[m][0] && data.nextY===moves[m][1] ) {
                     let c = theGame.boardCells[`C${data.nextX}${data.nextY}`].data;
+                    console.log(c);
+                    
                     if(c.color && c.color !== data.color) {
                         if (theGame.originPieces[`${c.name}`].type==='King') {
                             io.in(socket.myGame).emit('GameOver', c.color);
@@ -836,6 +825,8 @@ io.on("connection", function(socket) {
                     theGame.boardCells[`C${data.x}${data.y}`].data = 0;
                     theGame.boardCells[`C${data.nextX}${data.nextY}`].data = { color : data.color, name :data.name }  ; // data: { color:"black",name: "BlackKing" } }
                     theGame.moveCounter+=1;
+                    console.log(theGame.moveCounter);
+                    
                     return true;
                     break;
                 }
@@ -844,28 +835,33 @@ io.on("connection", function(socket) {
         
         }
         //00000000000000000000000000000000000000000000000000000000000000000000000000000000000
-        socket.on('picked',(data)=>{
+        socket.on('picked',(data,fn)=>{
 
             if(data) {
                 let a = possibleMoves(data);
-                socket.emit('pickedResult',a)
+                fn(a)
                 }
         })
         socket.on('moved', function (data,fn) {
             if(data ) { 
-                if(socket.Username===socket.challenger && data.color === 'white' ){
-                    if (legalCheck(data)) {
-                    fn("Valid");
-                    io.in(socket.myGame).emit('everyBodyMove', data);
+                if(data.sender===socket.challenger && data.color === 'white' ){
+                    
+                    if ( legalCheck(data)===true) {
+                        fn("Valid");
+                        console.log('853 vao valid');
+                        
+                        io.in(socket.myGame).emit('everyBodyMove', data);
                     }else
-                    fn("Invalid");
+                    { console.log('vao invalid');
+                    
+                        fn("Invalid");}
                 }
-                else if(socket.Username!==socket.challenger && data.color === 'black' ){
+                else if(data.sender!==socket.challenger && data.color === 'black' ){
                     if (legalCheck(data)) {
                     fn("Valid");
                     io.in(socket.myGame).emit('everyBodyMove', data);
                     }else
-                    fn("Invalid");
+                    {fn("Invalid");}
                 }
                 else {
                     fn("Invalid");
@@ -879,8 +875,6 @@ io.on("connection", function(socket) {
 
  
     // -----------chess-end------------------------------------
-
-
     socket.on('disconnect', function () {
         socket.broadcast.emit("no-dung-go-chu",socket.Username);
     });

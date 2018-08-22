@@ -92,7 +92,6 @@ socket.on("server-send-dangky-thatbai", function() {
 
 socket.on("danh-sach-dang-online", function(mangUser) {
     $("#boxContent").html("");
-    console.log(mangUser);
     
     for(i in mangUser) {
         $("#boxContent").append(`<div class='userOnline'> <h5>${i}</h5>  </div>`); // <button name='${i}' id='${mangUser[i]}' class='challengeButton'  >Challenge</button>
@@ -117,7 +116,6 @@ socket.on("no-dung-go-chu", function(gochu) {
 });
 
 socket.on("wanna-fight", function(data) {
-    console.log('vao wanna fight');
     
     if(window.confirm(`${data.challenger} challenge you to a game !`))
     {
@@ -210,7 +208,6 @@ let renbanco = () => {
                     console.log('vao dragstart chua');
                     
                     socket.emit('picked', {name : i,color : Pieces[i].color} ,(resData) => {
-                       
                             if(resData) {
                                 console.log(resData);
                                
@@ -242,8 +239,8 @@ let renbanco = () => {
                 piece.on('dragend', function() {  // mover
                     
                     
-                    let  nxtx = Math.floor(0.5+(piece.attrs.x-0)/80)*80
-                    let  nxty = Math.floor(0.5+piece.attrs.y/80)*80 
+                    let  nxtx = Math.floor(0.5+(piece.attrs.x-0)/80)
+                    let  nxty = Math.floor(0.5+piece.attrs.y/80)
                     
                     let cir = stage.find('Circle'); // remove possible moves hint
                     cir.hide();
@@ -269,59 +266,49 @@ let renbanco = () => {
                     // ----------------------------------------------------------
 
                 });
+            // add the shape to the layer
+            layer.add(piece);
+            // add the layer to the stage
+            stage.add(layer);
 
+            }   // imgtest onload
+        }// for loop to create pieces
 
-                socket.on('everyBodyMove',(data)=> {
-                                                        
-                                // Event was emitted successfully
-                                console.log( piece.attrs.x,piece.attrs.y);
+                    socket.on('everyBodyMove',(data)=> {
+                                                                    
+                        // Event was emitted successfully
+                        let oldX =  data.x;
+                        let oldY =  data.y;
+                        let newX =  data.nextX;
+                        let newY =  data.nextY;
+                        let imageOfPiece = $(`#${data.name}`);
+                        let theMovedPiece = Pieces[`${data.name}`];
+                        if( boardCells[`C${newX}${newY}`].data.name &&Pieces[`${boardCells[`C${newX}${newY}`].data.name}`] && Pieces[`${boardCells[`C${newX}${newY}`].data.name}`].color !== theMovedPiece.color  ) {
+                            console.log('vao roi');
+                            
+                            var shape = stage.find(`#${ boardCells[`C${newX}${newY}`].data.name }`)[0];
+                            if(shape){ shape.hide();   layer.draw(); }
+                            delete Pieces[`  ${ boardCells[`C${newX}${newY}`].data.name }  `]
+                            
+                        }
+                        boardCells[`C${oldX}${oldY}`].data=0;
 
-                                let oldX =  Pieces[i].x;
-                                let oldY =  Pieces[i].y;
-                                let newX =  piece.attrs.x/80;
-                                let newY =  piece.attrs.y/80;
- 
-                                if( boardCells[`C${newX}${newY}`].data.name &&Pieces[`${boardCells[`C${newX}${newY}`].data.name}`] && Pieces[`${boardCells[`C${newX}${newY}`].data.name}`].color !== Pieces[i].color  ) {
-                                    console.log('vao roi');
-                                    
-                                    var shape = stage.find(`#${ boardCells[`C${newX}${newY}`].data.name }`)[0];
-                                    shape.hide();
-                                    layer.draw();
-                                    delete Pieces[`  ${ boardCells[`C${newX}${newY}`].data.name }  `]
-                                    
-                                }
-                                boardCells[`C${oldX}${oldY}`].data=0;
-
-                                Pieces[i].x = newX;
-                                Pieces[i].y = newY; // add new pos to the originPieces
-                                
-                                boardCells[`C${newX}${newY}`].data = { color:Pieces[i].color,name: i }
-                                console.log('sau khi set',boardCells[`C${newX}${newY}`].data);
-                                console.log('p sau khi set',Pieces[`${ boardCells[`C${newX}${newY}`].data.name }`]);
-                                
+                        theMovedPiece.x = newX;
+                        theMovedPiece.y = newY; // add new pos to the originPieces
+                        imageOfPiece.setPosition({
+                            x : theMovedPiece.x*80,
+                            y : theMovedPiece.y*80 
+                            });
                         
-                                
-                                // add the shape to the layer
-                                layer.add(piece);
-                                // add the layer to the stage
-                                stage.add(layer);
-                                return;
-                })
+                        boardCells[`C${newX}${newY}`].data = { color:theMovedPiece.color,name: i }
 
+                        // add the shape to the layer
+                        layer.add(piece);
+                        // add the layer to the stage
+                        stage.add(layer);
+                        
+            })
 
+        
+};
 
-
-                // add the shape to the layer
-                layer.add(piece);
-                // add the layer to the stage
-                stage.add(layer);
-            };
-            
-            }   // for loop to create pieces
-}
-
-//<div class="userOnline">Teo Nguyen</div>
-
-/* 
-
-*/
