@@ -82,6 +82,23 @@ io.on("connection", function(socket) {
             BlackPawn2:{type:"Pawn",color:"black",src:"chess_pieces/bp.svg",originX:2,originY:1,x:2,y:1},BlackPawn3:{type:"Pawn",color:"black",src:"chess_pieces/bp.svg",originX:3,originY:1,x:3,y:1},
             BlackPawn4:{type:"Pawn",color:"black",src:"chess_pieces/bp.svg",originX:4,originY:1,x:4,y:1},BlackPawn5:{type:"Pawn",color:"black",src:"chess_pieces/bp.svg",originX:5,originY:1,x:5,y:1},
             BlackPawn6:{type:"Pawn",color:"black",src:"chess_pieces/bp.svg",originX:6,originY:1,x:6,y:1},BlackPawn7:{type:"Pawn",color:"black",src:"chess_pieces/bp.svg",originX:7,originY:1,x:7,y:1}},
+
+            Pieces : {WhiteKing:{type:"King",color:"white",src:"chess_pieces/wk.svg",originX:3,originY:7,x:3,y:7},WhiteQueen:{type:"Queen",color:"white",src:"chess_pieces/wq.svg",originX:4,originY:7,x:4,y:7},
+            WhiteBishopLeft:{type:"Bishop",color:"white",src:"chess_pieces/wb.svg",originX:2,originY:7,x:2,y:7},WhiteBishopRight:{type:"Bishop",color:"white",src:"chess_pieces/wb.svg",originX:5,originY:7,x:5,y:7},
+            WhiteKnightLeft:{type:"Knight",color:"white",src:"chess_pieces/wn.svg",originX:1,originY:7,x:1,y:7},WhiteKnightRight:{type:"Knight",color:"white",src:"chess_pieces/wn.svg",originX:6,originY:7,x:6,y:7},
+            WhiteRookLeft:{type:"Rook",color:"white",src:"chess_pieces/wr.svg",originX:0,originY:7,x:0,y:7},WhiteRookRight:{type:"Rook",color:"white",src:"chess_pieces/wr.svg",originX:7,originY:7,x:7,y:7},
+            WhitePawn0:{type:"Pawn",color:"white",src:"chess_pieces/wp.svg",originX:0,originY:6,x:0,y:6},WhitePawn1:{type:"Pawn",color:"white",src:"chess_pieces/wp.svg",originX:1,originY:6,x:1,y:6},
+            WhitePawn2:{type:"Pawn",color:"white",src:"chess_pieces/wp.svg",originX:2,originY:6,x:2,y:6},WhitePawn3:{type:"Pawn",color:"white",src:"chess_pieces/wp.svg",originX:3,originY:6,x:3,y:6},
+            WhitePawn4:{type:"Pawn",color:"white",src:"chess_pieces/wp.svg",originX:4,originY:6,x:4,y:6},WhitePawn5:{type:"Pawn",color:"white",src:"chess_pieces/wp.svg",originX:5,originY:6,x:5,y:6},
+            WhitePawn6:{type:"Pawn",color:"white",src:"chess_pieces/wp.svg",originX:6,originY:6,x:6,y:6},WhitePawn7:{type:"Pawn",color:"white",src:"chess_pieces/wp.svg",originX:7,originY:6,x:7,y:6},
+            BlackKing:{type:"King",color:"black",src:"chess_pieces/bk.svg",originX:3,originY:0,x:3,y:0},BlackQueen:{type:"Queen",color:"black",src:"chess_pieces/bq.svg",originX:4,originY:0,x:4,y:0},
+            BlackBishopLeft:{type:"Bishop",color:"black",src:"chess_pieces/bb.svg",originX:2,originY:0,x:2,y:0},BlackBishopRight:{type:"Bishop",color:"black",src:"chess_pieces/bb.svg",originX:5,originY:0,x:5,y:0},
+            BlackKnightLeft:{type:"Knight",color:"black",src:"chess_pieces/bn.svg",originX:1,originY:0,x:1,y:0},BlackKnightRight:{type:"Knight",color:"black",src:"chess_pieces/bn.svg",originX:6,originY:0,x:6,y:0},
+            BlackRookLeft:{type:"Rook",color:"black",src:"chess_pieces/br.svg",originX:0,originY:0,x:0,y:0},BlackRookRight:{type:"Rook",color:"black",src:"chess_pieces/br.svg",originX:7,originY:0,x:7,y:0},
+            BlackPawn0:{type:"Pawn",color:"black",src:"chess_pieces/bp.svg",originX:0,originY:1,x:0,y:1},BlackPawn1:{type:"Pawn",color:"black",src:"chess_pieces/bp.svg",originX:1,originY:1,x:1,y:1},
+            BlackPawn2:{type:"Pawn",color:"black",src:"chess_pieces/bp.svg",originX:2,originY:1,x:2,y:1},BlackPawn3:{type:"Pawn",color:"black",src:"chess_pieces/bp.svg",originX:3,originY:1,x:3,y:1},
+            BlackPawn4:{type:"Pawn",color:"black",src:"chess_pieces/bp.svg",originX:4,originY:1,x:4,y:1},BlackPawn5:{type:"Pawn",color:"black",src:"chess_pieces/bp.svg",originX:5,originY:1,x:5,y:1},
+            BlackPawn6:{type:"Pawn",color:"black",src:"chess_pieces/bp.svg",originX:6,originY:1,x:6,y:1},BlackPawn7:{type:"Pawn",color:"black",src:"chess_pieces/bp.svg",originX:7,originY:1,x:7,y:1}},
             
             originBoardCells : { C00: { x: 0, y: 0, data: { color:"black",name: "BlackRookLeft" } }, C10: { x: 1, y: 0, data: { color:"black",name: "BlackKnightLeft" } }, C20: { x: 2, y: 0, data: { color:"black",name: "BlackBishopLeft" } },
             C30: { x: 3, y: 0, data: { color:"black",name: "BlackKing" } }, C40: { x: 4, y: 0, data: { color:"black",name: "BlackQueen" } }, C50: { x: 5, y: 0, data: { color:"black",name: "BlackBishopRight" } }, 
@@ -128,15 +145,14 @@ io.on("connection", function(socket) {
     //--------------------------------------------originBoardCells  o-riginPieces boardCells moveCounter 
 
         let makeNewGame = () => {
-            for(let p in theGame.originPieces) {
-                theGame.originPieces[p].x=theGame.originPieces[p].originX+0;
-                theGame.originPieces[p].y=theGame.originPieces[p].originY+0;
-            }
+            
+            theGame.Pieces=theGame.originPieces;
+            theGame.moveCounter = 0;
             theGame.boardCells = theGame.originBoardCells;
         }
         let checkPawnMoves = (pawn) => {  // tra ve cac o co the di duoc
             let moves = [];
-            let Pawn = theGame.originPieces[pawn.name];
+            let Pawn = theGame.Pieces[pawn.name];
             if(Pawn.y!==0 && Pawn.y!==7) {
                 if(Pawn.x===Pawn.originX && Pawn.y===Pawn.originY) {  // tot o vi tri ban dau
                     if(Pawn.color==="white") {
@@ -216,7 +232,7 @@ io.on("connection", function(socket) {
         
         let checkRookMoves = (rook) => {
             let moves = [];
-            let Rook = theGame.originPieces[rook.name];
+            let Rook = theGame.Pieces[rook.name];
                     
                     
                 for(let m = Rook.x-1; m>=0;m-- ) {  // trai
@@ -271,7 +287,7 @@ io.on("connection", function(socket) {
         
         let checkKnightMoves=(knight)=> {
             let moves = [];
-            let Knight = theGame.originPieces[knight.name];
+            let Knight = theGame.Pieces[knight.name];
             let rawMoves=[];
             if(theGame.boardCells[`C${Knight.x-2}${Knight.y-1}`]) { rawMoves.push([Knight.x-2,Knight.y-1]);}
             if(theGame.boardCells[`C${Knight.x+2}${Knight.y-1}`]) { rawMoves.push([Knight.x+2,Knight.y-1]);}
@@ -290,7 +306,7 @@ io.on("connection", function(socket) {
         }
         let checkBishopMoves = (bishop,n) => {
             let moves = [];
-            let Bishop = theGame.originPieces[bishop.name];
+            let Bishop = theGame.Pieces[bishop.name];
             if (n === undefined) {
                 n = 7;
             } 
@@ -343,7 +359,7 @@ io.on("connection", function(socket) {
         }
         let checkKingMoves = (king)=> {
             let moves = [];
-            let King = theGame.originPieces[king.name]
+            let King = theGame.Pieces[king.name]
             moves = checkBishopMoves(king,1);
         
             // trai
@@ -377,24 +393,24 @@ io.on("connection", function(socket) {
         }
         let possibleMoves = (data) => {
             let moves=[];
-            if(theGame.originPieces[data.name])
-                {if(theGame.originPieces[data.name].type==="Pawn") {
+            if(theGame.Pieces[data.name])
+                {if(theGame.Pieces[data.name].type==="Pawn") {
                     moves=checkPawnMoves(data);
                     
                 }
-                else if(theGame.originPieces[data.name].type==="Rook") {
+                else if(theGame.Pieces[data.name].type==="Rook") {
                     moves=checkRookMoves(data);
                 }
-                else if(theGame.originPieces[data.name].type==="Knight") {
+                else if(theGame.Pieces[data.name].type==="Knight") {
                     moves=checkKnightMoves(data);
                 }
-                else if(theGame.originPieces[data.name].type==="Bishop") {
+                else if(theGame.Pieces[data.name].type==="Bishop") {
                     moves=checkBishopMoves(data);
                 }
-                else if(theGame.originPieces[data.name].type==="Queen") {
+                else if(theGame.Pieces[data.name].type==="Queen") {
                     moves=checkQueenMoves(data);
                 }
-                else if(theGame.originPieces[data.name].type==="King") {
+                else if(theGame.Pieces[data.name].type==="King") {
                     moves=checkKingMoves(data);
                 }
                 else {console.log("wrong name");
@@ -416,13 +432,14 @@ io.on("connection", function(socket) {
                 if(data.nextX===moves[m][0] && data.nextY===moves[m][1] ) {
                     let c = theGame.boardCells[`C${data.nextX}${data.nextY}`].data;
                     if(c.color && c.color !== data.color) {
-                        if (theGame.originPieces[`${c.name}`].type==='King') {
+                        if (theGame.Pieces[`${c.name}`].type==='King') {
                             io.in(socket.myGame).emit('GameOver', c.color);
+                            makeNewGame();
                         }
-                        delete theGame.originPieces[`${c.name}`];
+                        delete theGame.Pieces[`${c.name}`];
                     }
-                    theGame.originPieces[data.name].x=data.nextX;
-                    theGame.originPieces[data.name].y=data.nextY;
+                    theGame.Pieces[data.name].x=data.nextX;
+                    theGame.Pieces[data.name].y=data.nextY;
                     theGame.boardCells[`C${data.x}${data.y}`].data = 0;
                     theGame.boardCells[`C${data.nextX}${data.nextY}`].data = { color : data.color, name :data.name }  ; // data: { color:"black",name: "BlackKing" } }
                     theGame.moveCounter+=1;
@@ -493,26 +510,6 @@ io.on("connection", function(socket) {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     socket.on('join-room',(target)=> {  // challenger join room
         socket.myGame = `${target}-${socket.Username}`;
         socket.challenger = `${socket.Username}`;
@@ -526,15 +523,13 @@ io.on("connection", function(socket) {
         //--------------------------------------------originBoardCells  o-riginPieces boardCells moveCounter
 
         var makeNewGame = () => {
-            for(let p in theGame.originPieces) {
-                theGame.originPieces[p].x=theGame.originPieces[p].originX+0;
-                theGame.originPieces[p].y=theGame.originPieces[p].originY+0;
-            }
+            theGame.Pieces = theGame.originPieces;
+            theGame.moveCounter = 0;
             theGame.boardCells = theGame.originBoardCells;
         }
         var checkPawnMoves = (pawn) => {  // tra ve cac o co the di duoc
             let moves = [];
-            let Pawn = theGame.originPieces[pawn.name];
+            let Pawn = theGame.Pieces[pawn.name];
             if(Pawn.y!==0 && Pawn.y!==7) {
                 if(Pawn.x===Pawn.originX && Pawn.y===Pawn.originY) {  // tot o vi tri ban dau
                     if(Pawn.color==="white") {
@@ -614,7 +609,7 @@ io.on("connection", function(socket) {
         
         var checkRookMoves = (rook) => {
             let moves = [];
-            let Rook = theGame.originPieces[rook.name];
+            let Rook = theGame.Pieces[rook.name];
                     
                     
                 for(let m = Rook.x-1; m>=0;m-- ) {  // trai
@@ -669,7 +664,7 @@ io.on("connection", function(socket) {
         
         var checkKnightMoves=(knight)=> {
             let moves = [];
-            let Knight = theGame.originPieces[knight.name];
+            let Knight = theGame.Pieces[knight.name];
             let rawMoves=[];
             if(theGame.boardCells[`C${Knight.x-2}${Knight.y-1}`]) { rawMoves.push([Knight.x-2,Knight.y-1]);}
             if(theGame.boardCells[`C${Knight.x+2}${Knight.y-1}`]) { rawMoves.push([Knight.x+2,Knight.y-1]);}
@@ -688,7 +683,7 @@ io.on("connection", function(socket) {
         }
         var checkBishopMoves = (bishop,n) => {
             let moves = [];
-            let Bishop = theGame.originPieces[bishop.name];
+            let Bishop = theGame.Pieces[bishop.name];
             if (n === undefined) {
                 n = 7;
             } 
@@ -741,7 +736,7 @@ io.on("connection", function(socket) {
         }
         var checkKingMoves = (king)=> {
             let moves = [];
-            let King = theGame.originPieces[king.name]
+            let King = theGame.Pieces[king.name]
             moves = checkBishopMoves(king,1);
         
             // trai
@@ -775,24 +770,24 @@ io.on("connection", function(socket) {
         }
         var possibleMoves = (data) => {
             let moves=[];
-            if(theGame.originPieces[data.name])
-                {if(theGame.originPieces[data.name].type==="Pawn") {
+            if(theGame.Pieces[data.name])
+                {if(theGame.Pieces[data.name].type==="Pawn") {
                     moves=checkPawnMoves(data);
                     
                 }
-                else if(theGame.originPieces[data.name].type==="Rook") {
+                else if(theGame.Pieces[data.name].type==="Rook") {
                     moves=checkRookMoves(data);
                 }
-                else if(theGame.originPieces[data.name].type==="Knight") {
+                else if(theGame.Pieces[data.name].type==="Knight") {
                     moves=checkKnightMoves(data);
                 }
-                else if(theGame.originPieces[data.name].type==="Bishop") {
+                else if(theGame.Pieces[data.name].type==="Bishop") {
                     moves=checkBishopMoves(data);
                 }
-                else if(theGame.originPieces[data.name].type==="Queen") {
+                else if(theGame.Pieces[data.name].type==="Queen") {
                     moves=checkQueenMoves(data);
                 }
-                else if(theGame.originPieces[data.name].type==="King") {
+                else if(theGame.Pieces[data.name].type==="King") {
                     moves=checkKingMoves(data);
                 }
                 else {console.log("wrong name");
@@ -815,13 +810,15 @@ io.on("connection", function(socket) {
                     console.log(c);
                     
                     if(c.color && c.color !== data.color) {
-                        if (theGame.originPieces[`${c.name}`].type==='King') {
-                            io.in(socket.myGame).emit('GameOver', c.color);
+                        if (theGame.Pieces[`${c.name}`].type==='King') {
+                            io.in(socket.myGame).emit('GameOver', socket.Username);
+                            makeNewGame();
+                            return false;
                         }
-                        delete theGame.originPieces[`${c.name}`];
+                        delete theGame.Pieces[`${c.name}`];
                     }
-                    theGame.originPieces[data.name].x=data.nextX;
-                    theGame.originPieces[data.name].y=data.nextY;
+                    theGame.Pieces[data.name].x=data.nextX;
+                    theGame.Pieces[data.name].y=data.nextY;
                     theGame.boardCells[`C${data.x}${data.y}`].data = 0;
                     theGame.boardCells[`C${data.nextX}${data.nextY}`].data = { color : data.color, name :data.name }  ; // data: { color:"black",name: "BlackKing" } }
                     theGame.moveCounter+=1;
