@@ -4,6 +4,7 @@
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>DEMO CHATBOX</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
     <link rel="stylesheet" href="layout.css">
     <script src="socket.io/socket.io.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/konva/2.2.1/konva.min.js"></script>
@@ -17,39 +18,50 @@
 
 </head>
 <body>
-    <div class="wrapper">
-        <div class="loginForm">
-            <h3>Your name </h3>
-            <input type="text" id="txtUsername">
-            <input type="button" id="btnRegister" value="Register">
-        </div>
-        <div class="chatForm">
-            <div id="left">
-                <div id="boxTittle"><h3>User Online</h3><button id='challengeButton' >Challenge</button></div>
-                <div id="boxContent">
-                
+    <div class="wrapper d-flex flex-row justify-content-center">
 
-                    
+        <form class="loginForm mx-auto p-4 border border-dark rounded ">
+            <div class="form-group">
+              <label for="exampleInputEmail1">Your name</label>
+              <input type="email" class="form-control" id="txtUsername"  placeholder="Enter Username">
+              <small id="emailHelp" class="form-text text-muted">Choose your Username.</small>
+            </div>
+            <button type="button" id="btnRegister" class="btn btn-primary">Register</button>
+        </form>
+
+        <div class="chatForm ">
+
+            <div id="left" class="card" >
+                <div class="card-body">
+                  <h5 class="card-title text-center">Card title</h5>
+                  <button class="btn btn-primary ml-4 mb-3" id='challengeButton' >Challenge</button>
+                  <div id="boxContent"></div> 
                 </div>
             </div>
-            <div id="middle">
+
+            <div id="middle ">
                 <div id="container">
             
                 </div>
             </div>
-            <div id="right">
-                <div id="sayHi">
-                    Hello <span id="currentUser">Teo</span>
-                    <input type="button" id="btnLogout" value="Logout">
-                </div>
-                <div id="listMessage">
 
-                </div>
+            <div id="right " class="card ml-2">
+                <div class="card-body">
+                    <div id="sayHi" class="card-title d-flex flex-row">
+                        <h5>Hello</h5>&#160;<h5 id="currentUser">Teo</h5>
+                        <input type="button" class="btn btn-info ml-auto" id="btnLogout" value="Logout">
+                    </div>
+                    <div id="listMessage">
 
-                <input type="text" id="txtMessage">    
-                <input type="button" id="btnSend" value="Send">
+                    </div>
+
+                    <input type="text" id="txtMessage">    
+                    <input type="button" class="btn btn-primary" id="btnSend" value="Send">
+                </div>
             </div>
+
         </div>
     </div>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
 </body>
 </html>

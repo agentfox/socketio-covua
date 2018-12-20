@@ -81,8 +81,10 @@ $(document).ready(function() {
         socket.emit("client-send-username", $("#txtUsername").val() );
     });
     socket.on("server-send-dangky-thanhcong", function(data) {
-        $(".loginForm").hide(2000);
+        $(".loginForm").hide();
         $(".chatForm").show(1000);
+        $("body").css("background-image"," none")
+        $("body").css("background-color"," #3CAEA3")
         $("#currentUser").html(data);
         socket.Username = data;
         console.log(socket.Username);
@@ -93,8 +95,6 @@ $(document).ready(function() {
             if (target != null) {
                 socket.emit("challenging",{challenger : data,target : target});
             }
-    
-            console.log('clicked btnChallenge');
             
         });
    
@@ -153,13 +153,18 @@ socket.on("no-dung-go-chu", function(gochu) {
 });
 
 socket.on("wanna-fight", function(data) {
-    
+    console.log('vao wanafight',data);
     if(window.confirm(`${data.challenger} challenge you to a game !`))
-    {
+    {   
+        console.log("chap nhan");
+        $("#container").css("background-image"," none")
+        $("#container").css("background-color"," white")
         socket.emit('accepted',data.challenger)
         renbanco();
     }
     else{
+        console.log("tu choi");
+        
         socket.emit('declined',data.challenger)
     }
 
@@ -169,7 +174,10 @@ socket.on('challenge-status',(data)=>{
     console.log('vao challege status');
     
     if(data.status==='accepted') {
+        $("#container").css("background-image"," none")
+        $("#container").css("background-color"," white")
         alert('Your opponent accepted the challenge')
+        alert('You go first on white side ')
         socket.emit('join-room',data.target)
         renbanco();
     }

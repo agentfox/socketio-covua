@@ -5,7 +5,7 @@ app.set('view engine', 'ejs');
 app.set("views","./views")
 var server = require("http").Server(app);
 var io = require("socket.io")(server);
-server.listen(3000);
+server.listen(3000,()=>{ console.log("Server running on port 3000"); });
 const util = require('util')
 var RoomsList = {};
 var mangUser = {};
@@ -23,7 +23,8 @@ io.on("connection", function(socket) {
         mangUser[`${data}`]=socket.id;
         socket.Username = data;
         socket.emit("server-send-dangky-thanhcong",data);
-        io.sockets.emit("danh-sach-dang-online", mangUser); 
+        io.sockets.emit("danh-sach-dang-online", mangUser);
+         
     }  
     });
 
@@ -49,10 +50,11 @@ io.on("connection", function(socket) {
     });
 
     socket.on('challenging',(data)=>{   // challenger ask for a match
-        
-        io.to(`${mangUser[`${data.target}`]}`).emit('wanna-fight', {challenger : data.challenger });
-        
+        console.log("vao challenging",data);
+        console.log(mangUser[`${data.target}`]);
+        io.to(`${ mangUser[`${data.target}`] }`).emit('wanna-fight', {challenger : data.challenger });        
     })
+
     socket.on('accepted',(cha)=> {  // target reply
         io.to(`${mangUser[`${cha}`]}`).emit('challenge-status',{status :'accepted',target : socket.Username });
         socket.myGame = `${socket.Username}-${cha}`;
