@@ -1,5 +1,5 @@
 
-var socket = io("http://localhost:3000");
+var socket = io("https://cuong-chess.herokuapp.com/");
 
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 const originboardCells = { C00: { x: 0, y: 0, data: { color:"black",name: "BlackRookLeft" } }, C10: { x: 1, y: 0, data: { color:"black",name: "BlackKnightLeft" } }, C20: { x: 2, y: 0, data: { color:"black",name: "BlackBishopLeft" } },
