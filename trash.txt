@@ -1,0 +1,2 @@
+                                <div class="info1"><span id="challenger"></span> challenged you to a game of Chess !!!</div>
+                                <div class="info2"><span id="target"></span> accepted your challenge !!!</div>

@@ -153,20 +153,30 @@ socket.on("no-dung-go-chu", function(gochu) {
 });
 
 socket.on("wanna-fight", function(data) {
-    console.log('vao wanafight',data);
-    if(window.confirm(`${data.challenger} challenge you to a game !`))
-    {   
+    // console.log('vao wanafight',data);
+    
+    $('#ModalCenter').modal('show');
+    var tick;
+    let TimeOut = () => {
+          tick = setTimeout(()=>{
+                        console.log("tu choi");
+                        socket.emit('declined',data.challenger)
+                        delete data.challenger
+                    },10000)
+    }
+    TimeOut()
+    // after 10s the request will be declined
+    
+
+    $('.accept').click(()=>{
         console.log("chap nhan");
         $("#container").css("background-image"," none")
         $("#container").css("background-color"," white")
         socket.emit('accepted',data.challenger)
-        renbanco();
-    }
-    else{
-        console.log("tu choi");
-        
-        socket.emit('declined',data.challenger)
-    }
+        renderChessboard();
+        clearTimeout(tick)
+    })
+
 
 });
 
@@ -179,14 +189,14 @@ socket.on('challenge-status',(data)=>{
         alert('Your opponent accepted the challenge')
         alert('You go first on white side ')
         socket.emit('join-room',data.target)
-        renbanco();
+        renderChessboard();
     }
     else {
         alert('Your opponent declined the challenge')
     }
 })
 
-let renbanco = () => {
+let renderChessboard = () => {
     // -------------------- Create the chess board --------------------
     var width = window.innerWidth;
     var height = window.innerHeight;
@@ -363,5 +373,6 @@ socket.on('GameOver',(data)=> {
     alert(`GameOver. !${data} is the winner!`);
     Pieces = {...originPieces};
     boardCells = {...originboardCells};
-    renbanco();
+    renderChessboard();
+    
 })

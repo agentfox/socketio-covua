@@ -498,20 +498,6 @@ io.on("connection", function(socket) {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     socket.on('join-room',(target)=> {  // challenger join room
         socket.myGame = `${target}-${socket.Username}`;
         socket.challenger = `${socket.Username}`;
@@ -870,12 +856,15 @@ io.on("connection", function(socket) {
         });
 
     })
-    //------------chess xuli trong room------------------------
+    
 
  
     // -----------chess-end------------------------------------
+
     socket.on('disconnect', function () {
-        socket.broadcast.emit("no-dung-go-chu",socket.Username);
+
+        delete mangUser[`${socket.Username}`] ;       
+        socket.broadcast.emit("danh-sach-dang-online",mangUser);
     });
 
 
